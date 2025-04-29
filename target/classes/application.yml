@@ -1,78 +1,57 @@
-# application.yml do PROJETO GATEWAY
-
-# Porta em que o Gateway vai escutar
 server:
-  port: 9000 # Porta externa do Gateway
+  port: 9000
 
-# Nome da aplicação Gateway (informativo)
 spring:
   application:
     name: gateway-service
 
-  # Configuração do Spring Cloud Gateway
   cloud:
     gateway:
-      # Desativa a descoberta automática (não usamos Eureka)
       discovery:
         locator:
           enabled: false
 
-      # Definição manual das rotas
       routes:
+        # --- Rota para o shipping-service ---
+        - id: shipping_route
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/shipping/**
+          filters:
+            - StripPrefix=2
+
+        # --- Rota para o order-service ---
+        - id: order_route
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/order/**
+          filters:
+            - StripPrefix=2
+
+        # --- Rota para o cart-service ---
         - id: cart_route
-          uri: http://cart-service:8082
+          uri: http://localhost:8084
           predicates:
             - Path=/api/cart/**
           filters:
             - StripPrefix=2
 
-        # --- Rota para o bookstore-service ---
-        - id: auth_route
-          uri: http://auth-service:8080
+        # --- Rota para o book-service ---
+        - id: book_route
+          uri: http://localhost:8082
           predicates:
-            - Path=/api/auth/**
+            - Path=/api/book/**
           filters:
-            - StripPrefix=1
-        # --- Rota para o bookstore-service ---
-
-        - id: bookstore_route       # Nome único para esta rota
-          # URI de destino: http://<nome_do_container_docker>:<porta_interna>
-          # Use o nome que você dará ao container do bookstore-service na rede Docker
-          uri: http://book-service:8082
-          # Condições para esta rota ser usada
-          predicates:
-            # Encaminha pedidos que comecem com /api/books/
-            # Ex: Um pedido para http://SEU_HOST:9000/api/books/qualquercoisa
-            - Path=/api/books/**
-          # (Opcional) Filtros a aplicar antes de encaminhar
-          filters:
-            # Remove o prefixo '/api/books' do caminho antes de enviar
-            # Ex: /api/books/123 torna-se /123 no pedido enviado para bookstore-service
             - StripPrefix=2
 
-        # --- (Opcional) Rota para um Auth Service ---
-        # Se tiver um serviço de autenticação chamado 'auth-service' na porta 9090
-        # - id: auth_route
-        #   uri: http://auth-service:9090
-        #   predicates:
-        #     - Path=/auth/**
+        # --- Rota para o user-service ---
+        - id: user_route
+          uri: http://localhost:8080
+          predicates:
+            - Path=/api/user/**
+          filters:
+            - StripPrefix=2
 
-  # --- (Opcional) Configuração de Segurança para Validar JWTs ---
-  # Se o Gateway for validar JWTs, adicione esta secção
-  # security:
-  #   oauth2:
-  #     resourceserver:
-  #       jwt:
-  #         # Endereço onde o Auth Service expõe as chaves públicas JWK
-  #         # Use o nome do container Docker do Auth Service
-  #         jwk-set-uri: http://auth-service:9090/.well-known/jwks.json
-
-# --- Configuração de Logging (útil para debug do Gateway) ---
-# application.yml do PROJETO GATEWAY
 logging:
   level:
-    org.springframework.cloud.gateway: DEBUG # Ou TRACE para mais detalhes
-    org.springframework.security: DEBUG    # Ou TRACE
-    org.springframework.security.oauth2: DEBUG # Ou TRACE
-    reactor.netty.http.client: INFO
-    org.springframework.web: DEBUG
+    org.springframework.cloud.gateway: DEBUG

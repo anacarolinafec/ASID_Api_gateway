@@ -1,5 +1,3 @@
-# application.yml do API Gateway
-
 server:
   port: 9000
 
@@ -16,7 +14,7 @@ spring:
       routes:
         # --- Rota para o shipping-service ---
         - id: shipping_route
-          uri: http://shipping-service:8081
+          uri: http://localhost:8081
           predicates:
             - Path=/api/shipping/**
           filters:
@@ -24,7 +22,7 @@ spring:
 
         # --- Rota para o order-service ---
         - id: order_route
-          uri: http://order-service:8083
+          uri: http://localhost:8083
           predicates:
             - Path=/api/order/**
           filters:
@@ -32,7 +30,7 @@ spring:
 
         # --- Rota para o cart-service ---
         - id: cart_route
-          uri: http://cart-service:8084
+          uri: http://localhost:8084
           predicates:
             - Path=/api/cart/**
           filters:
@@ -40,7 +38,7 @@ spring:
 
         # --- Rota para o book-service ---
         - id: book_route
-          uri: http://book-service:8082
+          uri: http://localhost:8082
           predicates:
             - Path=/api/book/**
           filters:
@@ -48,7 +46,7 @@ spring:
 
         # --- Rota para o user-service ---
         - id: user_route
-          uri: http://user-service:8080
+          uri: http://localhost:8080
           predicates:
             - Path=/api/user/**
           filters:
@@ -57,7 +55,3 @@ spring:
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
-    org.springframework.security: DEBUG
-    org.springframework.security.oauth2: DEBUG
-    reactor.netty.http.client: INFO
-    org.springframework.web: DEBUG
