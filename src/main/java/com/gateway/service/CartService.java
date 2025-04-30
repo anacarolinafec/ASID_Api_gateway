@@ -3,10 +3,15 @@ package com.gateway.service;
 import com.gateway.client.BookServiceHTTPClient;
 import com.gateway.client.CartServiceHTTPClient;
 import com.gateway.dto.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Service
+@Slf4j
 public class CartService {
 
     @Autowired
@@ -16,10 +21,14 @@ public class CartService {
 
     public CartDetailsDTO getCartDetailsofUser(long userid) {
 
-        CartResponseDTO cart = cartServiceHTTPClient.getCartOfUserId(userid).orElseThrow(() -> new IllegalArgumentException("Cart nao existe"));
+        // Obtém o carrinho de compras do usuário
+        CartResponseDTO cart = cartServiceHTTPClient.getCartOfUserId(userid)
+                .orElseThrow(() -> new IllegalArgumentException("Cart não existe"));
 
-        List<CartItemDetailsDTO> cartitemsDetailsDTO = getcartItemDetailsDTO(cart);
+        // Obtém os detalhes dos itens do carrinho
+        List<CartItemDetailsDTO> cartitemsDetailsDTO = getCartItemDetailsDTO(cart);
 
+        // Cria o DTO de detalhes do carrinho e preenche com os dados
         CartDetailsDTO cartDetailsDTO = new CartDetailsDTO();
         cartDetailsDTO.setId(cart.getId());
         cartDetailsDTO.setCreatedDate(cart.getCreatedDate());
@@ -28,39 +37,44 @@ public class CartService {
         cartDetailsDTO.setCartItemsDetails(cartitemsDetailsDTO);
 
         return cartDetailsDTO;
-
     }
 
-    private List<CartItemDetailsDTO> getcartItemDetailsDTO(CartResponseDTO cart) {
+    private List<CartItemDetailsDTO> getCartItemDetailsDTO(CartResponseDTO cart) {
+        // Cria uma lista vazia para armazenar os detalhes dos itens
+        List<CartItemDetailsDTO> cartitemsDetailsDTOList = new ArrayList<>();
 
-        List<CartItemDetailsDTO> cartitemsDetailsDTOList = getcartItemDetailsDTO(cart);
+        // Preenche a lista com os detalhes dos itens do carrinho
+        for (CartItemsResponseDTO cartItemsResponseDTO : cart.getCartItems()) {
+            // Obtém os detalhes do livro correspondente ao item do carrinho
+            log.info("Fetching book with ID: {}", cartItemsResponseDTO.getBookid());
 
-        for (CartItemsResponseDTO cartItemsResponseDTO: cart.getCartItems()) {
-            BookResponseDTO book = bookServiceHTTPClient.getBookbyId(cartItemsResponseDTO.getBookid()).orElseThrow(() -> new IllegalArgumentException("Book nao existe"));
+            BookResponseDTO book = bookServiceHTTPClient.getBookbyId(cartItemsResponseDTO.getBookid())
+                    .orElseThrow(() -> new IllegalArgumentException("Book não existe"));
 
+            // Cria o DTO para o item do carrinho
             CartItemDetailsDTO cartItemDetailsDTO = new CartItemDetailsDTO();
             BookDetailsDTO bookDetailsDTO = new BookDetailsDTO();
 
-            // todo add the rest of the data to the dto
+            // Preenche os detalhes do livro
             bookDetailsDTO.setBookId(book.getId());
-            //bookDetailsDTO.setCategory(book.get);
+            //bookDetailsDTO.setCategory(book.getCategory()); // Se necessário
             bookDetailsDTO.setPrice(book.getPrice());
             bookDetailsDTO.setQuantity(book.getQuantity());
             bookDetailsDTO.setIsbnNumber(book.getIsbnNumber());
             bookDetailsDTO.setTitle(book.getTitle());
-            //bookDetailsDTO.getSubcategory(book.get);
+            //bookDetailsDTO.setSubcategory(book.getSubcategory()); // Se necessário
 
+            // Preenche os detalhes do item do carrinho
             cartItemDetailsDTO.setId(cartItemsResponseDTO.getId());
             cartItemDetailsDTO.setQuantity(cartItemsResponseDTO.getQuantity());
             cartItemDetailsDTO.setUnitPrice(cartItemsResponseDTO.getUnitPrice());
             cartItemDetailsDTO.setSubTotal(cartItemsResponseDTO.getSubTotal());
             cartItemDetailsDTO.setBookDetailsDTO(bookDetailsDTO);
 
+            // Adiciona o item à lista de detalhes do carrinho
             cartitemsDetailsDTOList.add(cartItemDetailsDTO);
-
         }
 
         return cartitemsDetailsDTOList;
     }
-
 }
