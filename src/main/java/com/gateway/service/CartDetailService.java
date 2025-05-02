@@ -2,6 +2,7 @@ package com.gateway.service;
 
 import com.gateway.client.BookServiceHTTPClient;
 import com.gateway.client.CartServiceHTTPClient;
+import com.gateway.client.UserServiceHTTPClient;
 import com.gateway.dto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,27 +19,40 @@ public class CartService {
     private CartServiceHTTPClient cartServiceHTTPClient;
     @Autowired
     private BookServiceHTTPClient bookServiceHTTPClient;
+    @Autowired
+    private UserServiceHTTPClient userServiceHTTPClient;
 
+    // retorna o cart detalhado
     public CartDetailsDTO getCartDetailsofUser(long userid) {
 
         // Obtém o carrinho de compras do usuário
         CartResponseDTO cart = cartServiceHTTPClient.getCartOfUserId(userid)
                 .orElseThrow(() -> new IllegalArgumentException("Cart não existe"));
 
+        UserResponseDTO user = userServiceHTTPClient.getUserById(userid)
+                .orElseThrow(() -> new IllegalArgumentException("Cart não existe"));
+
         // Obtém os detalhes dos itens do carrinho
         List<CartItemDetailsDTO> cartitemsDetailsDTO = getCartItemDetailsDTO(cart);
+
+
+        UserDetailsDTO userDetails = new UserDetailsDTO();
+        userDetails.setId(user.getId());
+        userDetails.setUsername(user.getUsername());
+
 
         // Cria o DTO de detalhes do carrinho e preenche com os dados
         CartDetailsDTO cartDetailsDTO = new CartDetailsDTO();
         cartDetailsDTO.setId(cart.getId());
         cartDetailsDTO.setCreatedDate(cart.getCreatedDate());
-        cartDetailsDTO.setUserId(userid);
+        cartDetailsDTO.setUserDetailsDTO(userDetails);
         //cartDetailsDTO.setTotal(cart.get);
         cartDetailsDTO.setCartItemsDetails(cartitemsDetailsDTO);
 
         return cartDetailsDTO;
     }
 
+    // retorna a Lista de cartItems
     private List<CartItemDetailsDTO> getCartItemDetailsDTO(CartResponseDTO cart) {
         // Cria uma lista vazia para armazenar os detalhes dos itens
         List<CartItemDetailsDTO> cartitemsDetailsDTOList = new ArrayList<>();
