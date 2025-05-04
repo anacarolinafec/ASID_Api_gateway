@@ -1,7 +1,7 @@
 package com.gateway.controller;
 
 import com.gateway.dto.CartDetailsDTO;
-import com.gateway.service.CartService;
+import com.gateway.service.CartDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/compose")
 
-public class CartController {
+public class CartDetailsController {
 
     @Autowired
-    private CartService cartService;
+    private CartDetailService cartDetailService;
 
     @GetMapping("/cart/details/{userid}")
     public ResponseEntity<CartDetailsDTO> getUserDetailedCart(@PathVariable long userid){
 
-        CartDetailsDTO cartDetails = cartService.getCartDetailsofUser(userid);
+        CartDetailsDTO cartDetails = cartDetailService.getCartDetailsofUser(userid);
 
         return new ResponseEntity<>(cartDetails,HttpStatus.OK);
     }

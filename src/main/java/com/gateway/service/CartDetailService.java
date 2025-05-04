@@ -13,7 +13,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class CartService {
+public class CartDetailService {
 
     @Autowired
     private CartServiceHTTPClient cartServiceHTTPClient;
@@ -30,20 +30,18 @@ public class CartService {
                 .orElseThrow(() -> new IllegalArgumentException("Cart não existe"));
 
         UserResponseDTO user = userServiceHTTPClient.getUserById(userid)
-                .orElseThrow(() -> new IllegalArgumentException("Cart não existe"));
+                .orElseThrow(() -> new IllegalArgumentException("User não existe"));
 
         // Obtém os detalhes dos itens do carrinho
         List<CartItemDetailsDTO> cartitemsDetailsDTO = getCartItemDetailsDTO(cart);
-
 
         UserDetailsDTO userDetails = new UserDetailsDTO();
         userDetails.setId(user.getId());
         userDetails.setUsername(user.getUsername());
 
-
         // Cria o DTO de detalhes do carrinho e preenche com os dados
         CartDetailsDTO cartDetailsDTO = new CartDetailsDTO();
-        cartDetailsDTO.setId(cart.getId());
+        cartDetailsDTO.setCartId(cart.getId());
         cartDetailsDTO.setCreatedDate(cart.getCreatedDate());
         cartDetailsDTO.setUserDetailsDTO(userDetails);
         //cartDetailsDTO.setTotal(cart.get);
@@ -79,7 +77,7 @@ public class CartService {
             //bookDetailsDTO.setSubcategory(book.getSubcategory()); // Se necessário
 
             // Preenche os detalhes do item do carrinho
-            cartItemDetailsDTO.setId(cartItemsResponseDTO.getId());
+            cartItemDetailsDTO.setCartItemId(cartItemsResponseDTO.getId());
             cartItemDetailsDTO.setQuantity(cartItemsResponseDTO.getQuantity());
             cartItemDetailsDTO.setUnitPrice(cartItemsResponseDTO.getUnitPrice());
             cartItemDetailsDTO.setSubTotal(cartItemsResponseDTO.getSubTotal());

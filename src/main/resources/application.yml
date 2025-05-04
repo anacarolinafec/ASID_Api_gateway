@@ -9,6 +9,15 @@ cart:
   service:
     url: http://localhost:8084
 
+user:
+  service:
+    url: http://localhost:8080
+
+order:
+  service:
+    url: http://localhost:8083
+
+
 spring:
   application:
     name: gateway-service

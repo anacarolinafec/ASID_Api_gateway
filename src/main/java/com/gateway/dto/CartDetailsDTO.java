@@ -7,9 +7,10 @@ import java.util.List;
 @Data
 public class CartDetailsDTO {
 
-    private long id;
+    private long cartId;
     private String createdDate;
-    private long userId;
+    //private long userId;
+    private UserDetailsDTO userDetailsDTO;
     private Double total;
     private List<CartItemDetailsDTO> cartItemsDetails;
 }

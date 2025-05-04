@@ -1,13 +1,20 @@
-package com.ijse.bookstore.dto;
+package com.gateway.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.util.Date;
+import java.util.List;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class OrderShippingConfirmation {
-    private Long orderId;
-    private Long userId;
-    private double orderTotal;
-    private String address;
-    private String city;
-    private String postalCode;
+public class OrderResponseDTO {
+    private Long id;
+    private Date orderDate;
+    private double totalPrice;
+    private long userId;
+    @JsonProperty("orderDetails") // <- nome da propriedade no JSON vindo da API de orders
+    private List<OrderdetailsResponseDTO> orderDetails;
+
 }
