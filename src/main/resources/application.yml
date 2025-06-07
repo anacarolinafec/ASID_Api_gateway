@@ -31,7 +31,7 @@ spring:
       routes:
         # --- Rota para o shipping-service ---
         - id: shipping_route
-          uri: http://localhost:8081
+          uri: ${SHIPPING_SERVICE_URL:http://localhost:8081}
           predicates:
             - Path=/api/shipping/**
           filters:
@@ -39,7 +39,7 @@ spring:
 
         # --- Rota para o order-service ---
         - id: order_route
-          uri: http://localhost:8083
+          uri: ${ORDER_SERVICE_URL:http://localhost:8083}
           predicates:
             - Path=/api/order/**
           filters:
@@ -47,7 +47,7 @@ spring:
 
         # --- Rota para o cart-service ---
         - id: cart_route
-          uri: http://localhost:8084
+          uri: ${CART_SERVICE_URL:http://localhost:8084}
           predicates:
             - Path=/api/cart/**
           filters:
@@ -55,7 +55,7 @@ spring:
 
         # --- Rota para o book-service ---
         - id: book_route
-          uri: http://localhost:8082
+          uri: ${BOOK_SERVICE_URL:http://localhost:8082}
           predicates:
             - Path=/api/book/**
           filters:
@@ -63,7 +63,7 @@ spring:
 
         # --- Rota para o user-service ---
         - id: user_route
-          uri: http://localhost:8080
+          uri: ${USER_SERVICE_URL:http://localhost:8080}
           predicates:
             - Path=/api/user/**
           filters:
