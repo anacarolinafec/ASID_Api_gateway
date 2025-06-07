@@ -1,16 +1,21 @@
-# Use an official OpenJDK runtime as a parent image (Choose a version compatible with your project, e.g., 17)
-FROM eclipse-temurin:17-jre-jammy
+# Etapa de build
+FROM maven:3.9.2-eclipse-temurin-17 AS build
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the executable JAR file generated LOCALLY (e.g., via 'mvn package')
+# Copia os ficheiros do projeto
+COPY . .
 
-COPY target/gateway-0.0.1-SNAPSHOT.jar app.jar
+# Compila o projeto sem correr os testes
+RUN mvn clean package -DskipTests
 
-# Inform Docker that the container will listen on this port at runtime
-# MATCH THIS to the server.port in the Gateway's application.yml
-EXPOSE 9000
+# Etapa final de execução
+FROM eclipse-temurin:17-jdk
 
-# Define the command to run the application when the container starts
+WORKDIR /app
+
+# Copia o ficheiro jar gerado na etapa de build
+COPY --from=build /app/target/*.jar app.jar
+
+# Define o comando de arranque
 ENTRYPOINT ["java", "-jar", "app.jar"]
