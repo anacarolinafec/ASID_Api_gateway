@@ -3,19 +3,19 @@ server:
 
 book:
   service:
-    url: http://localhost:8082
+    url: ${BOOK_SERVICE_URL:http://localhost:8082}
 
 cart:
   service:
-    url: http://localhost:8084
+    url: ${CART_SERVICE_URL:http://localhost:8084}
 
 user:
   service:
-    url: http://localhost:8080
+    url: ${USER_SERVICE_URL:http://localhost:8080}
 
 order:
   service:
-    url: http://localhost:8083
+    url: ${ORDER_SERVICE_URL:http://localhost:8083}
 
 
 spring:
