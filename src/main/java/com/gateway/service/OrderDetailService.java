@@ -73,8 +73,6 @@ public class OrderDetailService {
             bookDetailsDTO.setQuantity(book.getQuantity());
             bookDetailsDTO.setIsbnNumber(book.getIsbnNumber());
             bookDetailsDTO.setTitle(book.getTitle());
-            //bookDetailsDTO.setSubcategory(book.getSubcategory()); // Se necessário
-            //bookDetailsDTO.setCategory(book.getCategory()); // Se necessário
 
             // Preenche os detalhes do item do carrinho
             orderdetailsDetailedDTO.setQuantity(orderdetailsResponseDTO.getQuantity());
